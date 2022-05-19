@@ -5240,22 +5240,6 @@ static void r8153_eee_en(struct r8152 *tp, bool enable)
 	tp->ups_info.eee = enable;
 }
 
-static void r8156_eee_en(struct r8152 *tp, bool enable)
-{
-	u16 config;
-
-	r8153_eee_en(tp, enable);
-
-	config = ocp_reg_read(tp, OCP_EEE_ADV2);
-
-	if (enable)
-		config |= MDIO_EEE_2_5GT;
-	else
-		config &= ~MDIO_EEE_2_5GT;
-
-	ocp_reg_write(tp, OCP_EEE_ADV2, config);
-}
-
 static void rtl_eee_enable(struct r8152 *tp, bool enable)
 {
 	switch (tp->version) {
@@ -5290,15 +5274,6 @@ static void rtl_eee_enable(struct r8152 *tp, bool enable)
 	case RTL_VER_11:
 	case RTL_VER_12:
 	case RTL_VER_13:
-	case RTL_VER_15:
-		if (enable) {
-			r8156_eee_en(tp, true);
-			ocp_reg_write(tp, OCP_EEE_ADV, tp->eee_adv);
-		} else {
-			r8156_eee_en(tp, false);
-			ocp_reg_write(tp, OCP_EEE_ADV, 0);
-		}
-		break;
 	default:
 		break;
 	}
@@ -8998,19 +8973,6 @@ static int rtl8152_set_speed(struct r8152 *tp, u8 autoneg, u32 speed, u8 duplex,
 
 			if (orig != new1)
 				r8152_mdio_write(tp, MII_CTRL1000, new1);
-		}
-
-		if (tp->support_2500full) {
-			orig = ocp_reg_read(tp, OCP_10GBT_CTRL);
-			new1 = orig & ~MDIO_AN_10GBT_CTRL_ADV2_5G;
-
-			if (advertising & RTL_ADVERTISED_2500_FULL) {
-				new1 |= MDIO_AN_10GBT_CTRL_ADV2_5G;
-				tp->ups_info.speed_duplex = NWAY_2500M_FULL;
-			}
-
-			if (orig != new1)
-				ocp_reg_write(tp, OCP_10GBT_CTRL, new1);
 		}
 
 		bmcr = BMCR_ANENABLE | BMCR_ANRESTART;
@@ -17988,12 +17950,6 @@ static int rtl8152_get_link_ksettings(struct net_device *netdev,
 		linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
 				 cmd->link_modes.advertising,
 				 ctrl1000 & ADVERTISE_1000FULL);
-	}
-
-	if (tp->support_2500full) {
-		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
-				 cmd->link_modes.advertising,
-				 ocp_reg_read(tp, OCP_10GBT_CTRL) & MDIO_AN_10GBT_CTRL_ADV2_5G);
 	}
 
 	if (bmsr & BMSR_ANEGCOMPLETE) {
