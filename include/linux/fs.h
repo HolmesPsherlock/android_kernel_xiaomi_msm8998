@@ -2064,7 +2064,7 @@ struct file_system_type {
 	struct lock_class_key i_mutex_dir_key;
 };
 
-#define MODULE_ALIAS_FS(NAME) MODULE_ALIAS("fs-" NAME)
+#define MODULE_ALIAS_FS(NAME) MODULE_ALIAS(NAME)
 
 extern struct dentry *mount_ns(struct file_system_type *fs_type,
 	int flags, void *data, void *ns, struct user_namespace *user_ns,

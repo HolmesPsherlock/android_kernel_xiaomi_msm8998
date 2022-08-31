@@ -625,7 +625,6 @@ void usb_remove_function(struct usb_configuration *c, struct usb_function *f);
 		.alloc_inst = _inst_alloc,				\
 		.alloc_func = _func_alloc,				\
 	};								\
-	MODULE_ALIAS("usbfunc:"__stringify(_name));
 
 #define DECLARE_USB_FUNCTION_INIT(_name, _inst_alloc, _func_alloc)	\
 	DECLARE_USB_FUNCTION(_name, _inst_alloc, _func_alloc)		\

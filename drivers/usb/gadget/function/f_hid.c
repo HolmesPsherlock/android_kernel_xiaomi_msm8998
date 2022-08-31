@@ -10,7 +10,6 @@
  */
 
 #include <linux/kernel.h>
-#include <linux/module.h>
 #include <linux/hid.h>
 #include <linux/idr.h>
 #include <linux/cdev.h>
@@ -1147,9 +1146,6 @@ static void __exit afunc_exit(void)
 
 module_init(afunc_init);
 module_exit(afunc_exit);
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Fabien Chouteau");
 
 int ghid_setup(struct usb_gadget *g, int count)
 {

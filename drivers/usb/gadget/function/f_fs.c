@@ -22,7 +22,6 @@
 #include <linux/pagemap.h>
 #include <linux/export.h>
 #include <linux/hid.h>
-#include <linux/module.h>
 #include <linux/uio.h>
 #include <linux/ipc_logging.h>
 #include <asm/unaligned.h>
@@ -1672,7 +1671,6 @@ static struct file_system_type ffs_fs_type = {
 	.mount		= ffs_fs_mount,
 	.kill_sb	= ffs_fs_kill_sb,
 };
-MODULE_ALIAS_FS("functionfs");
 
 
 /* Driver's main init/cleanup functions *************************************/
@@ -4339,6 +4337,3 @@ static void __exit ffs_exit(void)
 	}
 }
 module_exit(ffs_exit);
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Michal Nazarewicz");
